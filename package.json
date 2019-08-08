@@ -12,6 +12,15 @@
     "crypto-random-string": "^3.0.1",
     "express": "^4.17.1",
     "nedb": "^1.8.0",
+    "pug": "^2.0.4",
     "validator": "^11.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huntinghawk1415/lurl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/huntinghawk1415/lurl/issues"
+  },
+  "homepage": "https://github.com/huntinghawk1415/lurl#readme"
 }

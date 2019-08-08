@@ -1,0 +1,15 @@
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(href='https://fonts.googleapis.com/css?family=Roboto&display=swap' rel='stylesheet')
+    link(href='/main.css' rel='stylesheet')
+    script(src='/index.js' type='text/javascript')
+    title Your New URL
+  body
+    main
+      div(class='container')
+        label(for='Your new URL') Here's your new link! (psst... this is readonly)
+        div(class='control')
+          input(id='input' type='text' readonly value= `jl-lurl.herokuapp.com/api/shorturl/${link}`)
+          button(onmouseup='copyURL()') Copy
