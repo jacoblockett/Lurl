@@ -1,59 +1,57 @@
 const express = require('express')
 const Datastore = require('nedb')
-const database = new Datastore({
-  filename: 'lurl.db',
-  autoload: true
-})
+const { isURL } = require('validator')
+const dns = require('dns')
+const crs = require('crypto-random-string')
+const url = require('url')
+const database = new Datastore({ filename: 'lurl.db', autoload: true })
 const app = express()
 let linkToGive = ''
 
-app.use('/api/shorturl/new', express.static(__dirname + '/public'))
-app.use(express.static(__dirname + '/public'))
-app.use('/api/shorturl/new', express.json({limit: '1mb'}))
-
 app.set('view engine', 'pug')
+app.use('/', express.json({limit: '1mb'}))
 
-app.post('/api/shorturl/new', (req, res) => {
-  const validator = require('validator')
-  const crs = require('crypto-random-string')
-  const url = require('url')
+app.get('/', (req, res) => res.render('index'))
 
-  if (validator.isURL(req.body.url)) {
-    const parsedUrl = url.parse(req.body.url)
-
-    database.findOne({href: parsedUrl.href}, (err, docs) => {
+app.post('/', (req, res) => {
+  if (isURL(req.body.url)) {
+    dns.resolve(req.body.url, (err, records) => {
       if (err) throw new Error(err)
-
-      if (docs) {
-        linkToGive = docs._id
-      } else {
-        linkToGive = crs({type: 'url-safe', length: 8})
-        database.insert({
-          _id: linkToGive,
-          ...url.parse(req.body.url)
+      
+      if (records.length) {
+        const parsedUrl = url.parse(req.body.url)
+        
+        database.findOne({href: parsedUrl.href}, (err, docs) => {
+          if (err) throw new Error(err)
+          
+          if (docs) {
+            linkToGive = docs._id
+          } else {
+            const { protocol, hostname, pathname, href } = url.parse(req.body.url)
+            
+            linkToGive = crs({type: 'url-safe', length: 8})
+            database.insert({ _id: linkToGive, protocol, hostname, pathname, href })
+          }
         })
+        
+        res.json({})
+      } else {
+        res.json({ error: 'Invalid URL', received: req.body.url })
       }
     })
-
-    res.json({})
   } else {
-    res.json({
-      error: 'Invalid URL',
-      received: req.body.url
-    })
+    res.json({ error: 'Invalid URL', received: req.body.url })
   }
 })
 
-app.get('/api/shorturl/new/present', (req, res) => {
-  res.render('present', {link: linkToGive})
-})
+app.use(express.static('public'))
 
-app.get('/api/shorturl/:id', (req, res) => {
+app.get('/present', (req, res) => res.render('present', {link: linkToGive}))
+
+app.get('/:id', (req, res) => {
   database.findOne({_id: req.params.id}, (err, docs) => {
-    if (err) {
-      throw new Error(err)
-    }
-
+    if (err) throw new Error(err)
+    
     if (docs) {
       const prot = docs.protocol === null ? 'http:' : docs.protocol
       const fullpath = !docs.hostname ? docs.href : `${docs.hostname}${docs.pathname}`
@@ -65,6 +63,6 @@ app.get('/api/shorturl/:id', (req, res) => {
   })
 })
 
-app.use('*', express.static('public/404.html'))
+app.get('*', (req, res) => res.render('404'))
 
-app.listen(3000)
+app.listen(process.env.PORT || 3000)

@@ -1,6 +1,17 @@
+document.addEventListener('keyup', event => {
+  if (event.keyCode === 13) {
+    event.preventDefault()
+    processURL()
+  }
+})
+
 async function processURL() {
   const urlToProcess = document.getElementById('input')
-  const response = await fetch('/api/shorturl/new', {
+  const submitBtn = document.getElementById('submit')
+
+  submitBtn.innerHTML = '<i class="fas fa-fan fa-spin"></i>'
+
+  const response = await fetch('/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -8,11 +19,14 @@ async function processURL() {
     referrer: 'no-referrer',
     body: JSON.stringify({url: urlToProcess.value})
   })
-  const jsonData = await response.json()
+  const json = await response.json()
 
-  //add logic to backfire bad url
-
-  window.location.href = '/api/shorturl/new/present'
+  if (!json.error) {
+    window.location.href = '/present'
+  } else {
+    document.getElementById('field').classList.add('is-danger')
+    submitBtn.innerHTML = 'Send'
+  }
 }
 
 function copyURL() {

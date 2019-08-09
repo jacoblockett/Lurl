@@ -10,7 +10,8 @@ html
   body
     main
       div(class='container')
-        label(for='Your new URL') Here's your new link! (psst... this is readonly)
-        div(class='control')
-          input(id='input' type='text' readonly value=`jl-lurl.herokuapp.com/${link}`)
-          button(onmouseup='copyURL()') Copy
+        label(for='URL input') Lurl
+        div(id='field' class='control')
+          input(id='input' type='text' placeholder='Gimme a URL...')
+          button(id='submit' onmouseup='processURL()') Send
+        p That doesn't seem like a valid url...

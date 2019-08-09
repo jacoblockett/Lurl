@@ -15,7 +15,7 @@ main {
 }
 
 .container {
-  width: 50vw;
+  width: 75vw;
 }
 
 label {
@@ -26,7 +26,6 @@ label {
 .control {
   margin-top: 8px;
   display: flex;
-  
 }
 
 ::placeholder {
@@ -64,6 +63,24 @@ button {
   border-radius: 0 4px 4px 0;
 }
 
+p {
+  display: none;
+  font-size: .75rem;
+  margin-top: .25rem;
+}
+
+p, .four-o-four {  
+  color: #ff3860;
+}
+
 button:hover {
   background-color: #00c4a7;
+}
+
+.is-danger>input {
+  border-color: #ff3860;
+}
+
+.is-danger+p {
+  display: block!important;
 }
