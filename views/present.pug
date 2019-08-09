@@ -10,7 +10,7 @@ html
   body
     main
       div(class='container')
-        label(for='Your new URL') Here's your new link! (psst... this is readonly)
+        label(for='Your new URL') Here's your new link!
         div(class='control')
-          input(id='input' type='text' readonly value=`jl-lurl.herokuapp.com/${link}`)
-          button(onmouseup='copyURL()') Copy
+          input(id='input' type='text' value=`jl-lurl.herokuapp.com/${link}`)
+          button(id='copy' onmouseup='copyURL()') Copy

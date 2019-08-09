@@ -31,7 +31,9 @@ async function processURL() {
 
 function copyURL() {
   const urlToCopy = document.getElementById('input')
+  const copyBtn = document.getElementById('copy')
 
   urlToCopy.select()
   document.execCommand('copy')
+  copy.innerHTML = 'Copied!'
 }
